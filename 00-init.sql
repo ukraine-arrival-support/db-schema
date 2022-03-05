@@ -7,7 +7,6 @@
 CREATE TABLE station AS (
   id text PRIMARY KEY
 );
-
 COMMENT ON TABLE station AS 'Table for station-level information';
 
 -- Table "coordinator"
@@ -33,10 +32,10 @@ CREATE TABLE volunteer AS (
   ts_end TIMESTAMP WITHOUT TIMEZONE,
   share_contact BOOLEAN DEFAULT FALSE,
   languages JSONB,
+  comment TEXT,
   PRIMARY KEY (name, station, contact, ts_start);
 );
 COMMENT ON TABLE volunteer AS 'Table of registered volunteers';
-
 
 -- TABLE "incoming"
 CREATE TABLE incoming AS (
