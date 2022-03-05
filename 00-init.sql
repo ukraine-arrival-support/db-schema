@@ -4,50 +4,69 @@
 
 -- Table "station"
 
-CREATE TABLE station AS (
-  id text PRIMARY KEY
+BEGIN;
+
+CREATE TABLE station (
+  label TEXT PRIMARY KEY
 );
-COMMENT ON TABLE station AS 'Table for station-level information';
+
+COMMENT ON TABLE station IS 'Table for station-level information';
+
+INSERT INTO station (label)
+VALUES
+  ('Hbf (Train)'),
+  ('ZOB (Bus)'),
+  ('Suedkreuz (Bus)'),
+  ('Ostbahnhof (Train)');
 
 -- Table "coordinator"
-CREATE TABLE coordinator AS (
+CREATE TABLE coordinator (
   name TEXT,
-  station REFERENCES station(id),
+  station TEXT,
   contact TEXT,
-  ts_start TIMESTAMP WITHOUT TIMEZONE,
-  ts_end TIMESTAMP WITHOUT TIMEZONE,
+  ts_start TIMESTAMP WITHOUT TIME ZONE,
+  ts_end TIMESTAMP WITHOUT TIME ZONE,
   role TEXT,
   tasks TEXT,
   comment TEXT,
-  PRIMARY KEY(name, station, contact, ts_start)
+  PRIMARY KEY(name, station, contact, ts_start),
+  CONSTRAINT
+    fk_coordinator_station FOREIGN KEY(station) REFERENCES station(label) ON UPDATE CASCADE
 );
-COMMENT ON TABLE coordinator AS 'Table on coordinators per station';
+
+COMMENT ON TABLE coordinator IS 'Table on coordinators per station';
 
 -- Table "volunteer"
-CREATE TABLE volunteer AS (
+CREATE TABLE volunteer (
   name TEXT,
-  station REFERENCES station(id),
+  station TEXT,
   contact TEXT,
-  ts_start TIMESTAMP WITHOUT TIMEZONE,
-  ts_end TIMESTAMP WITHOUT TIMEZONE,
+  ts_start TIMESTAMP WITHOUT TIME ZONE,
+  ts_end TIMESTAMP WITHOUT TIME ZONE,
   share_contact BOOLEAN DEFAULT FALSE,
   languages JSONB,
   comment TEXT,
-  PRIMARY KEY (name, station, contact, ts_start);
+  PRIMARY KEY (name, station, contact, ts_start),
+  CONSTRAINT
+    fk_volunteer_station FOREIGN KEY(station) REFERENCES station(label) ON UPDATE CASCADE
 );
-COMMENT ON TABLE volunteer AS 'Table of registered volunteers';
+COMMENT ON TABLE volunteer IS 'Table of registered volunteers';
 
 -- TABLE "incoming"
-CREATE TABLE incoming AS (
-  station REFERENCES station(id),
+CREATE TABLE incoming (
+  station TEXT,
   id TEXT,
   platform INT DEFAULT NULL,
-  ts_scheduled TIMESTAMP WITHOUT TIMEZONE,
-  ts_estimated TIMSTAMP WITHOUT TIMEZONE,
+  ts_scheduled TIMESTAMP WITHOUT TIME ZONE,
+  ts_estimated TIMESTAMP WITHOUT TIME ZONE,
   delay INT,
-  ts_delay TIMESTAMP WITHOUT TIMEZONE DEFAULT NULL,
+  ts_delay TIMESTAMP WITHOUT TIME ZONE DEFAULT NULL,
   type TEXT,
   passengers INT,
-  PRIMARY KEY (station, id, ts_scheduled)
+  PRIMARY KEY (station, id, ts_scheduled),
+  CONSTRAINT
+    fk_incoming_station FOREIGN KEY(station) REFERENCES station(label) ON UPDATE CASCADE
 );
-COMMENT ON TABLE incoming AS 'Table on incoming trains and buses';
+COMMENT ON TABLE incoming IS 'Table on incoming trains and buses';
+COMMIT;
+
