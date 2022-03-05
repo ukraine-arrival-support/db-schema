@@ -42,7 +42,10 @@ COMMENT ON TABLE volunteer AS 'Table of registered volunteers';
 CREATE TABLE incoming AS (
   station REFERENCES station(id),
   id TEXT,
+  platform INT DEFAULT NULL,
   ts_scheduled TIMESTAMP WITHOUT TIMEZONE,
+  ts_estimated TIMSTAMP WITHOUT TIMEZONE,
+  delay INT,
   ts_delay TIMESTAMP WITHOUT TIMEZONE DEFAULT NULL,
   type TEXT,
   passengers INT,
